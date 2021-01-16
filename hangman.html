@@ -41,7 +41,6 @@
       alert(answerArray.join(" ") + " Колличество попыток: " + attempts);
       // Запрашиваем вариант ответа
       var guess = prompt("Угадайте букву, или нажмите Отмена для выхода из игры.");
-      if (guess !== null) guess = guess.toLowerCase(); //преобразование заглавных букв в строчные
       if (guess === null) {
         // Выходим из игрового цикла
         break;
@@ -50,6 +49,7 @@
       }
       else {
         attempts--; //снижаю чисто попыток
+        guess = guess.toLowerCase(); //преобразование заглавных букв в строчные
         for (var j = 0; j < word.length; j++) {
           if (word[j] === guess) {
             if (answerArray[j] === "_") {
@@ -57,6 +57,7 @@
               remainingLetters--;
             } else {
               alert("Эта буква уже была! Число попыток уменьшено: " + attempts);
+              break;
             }
           }
         }
