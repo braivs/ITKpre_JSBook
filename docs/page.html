@@ -7,10 +7,15 @@
 </head>
 
 <body>
-  <h1 id="main-heading">Привет, мир!</h1>
+  <h1>Привет, мир!</h1>
   <p>Моя первая веб-страничка.</p>
   <script>
-    var headingElement = document.getElementById("main-heading");
+    var counter = 5;
+    var printMessage = function () {
+      console.log("Ты смотришь в консоль уже " + counter + " сек");
+      counter += 5;
+    };
+    intervalId = setInterval(printMessage, 5000);
   </script>
 </body>
 

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Интерактивное программирование</title>
+</head>
+
+<body>
+  <h1 id="heading">Кликни меня! Кликов:</h1>
+
+  <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+
+  <script>
+    var leftOffset = 0;
+    var topOffset = 0;
+    var currentDirection = "right"; // первое направление движения
+
+    var clickCount = 0;
+
+    $("h1").append(" " + clickCount);
+    
+
+    var moveHeading = function () {
+      $("#heading").offset({
+        left: leftOffset,
+        top: topOffset
+      });
+
+      if (currentDirection === "right") {
+        leftOffset++;
+        if (leftOffset > 200) {
+          leftOffset = 200;
+          currentDirection = "down";
+        }
+      } else if (currentDirection === "down") {
+        topOffset++;
+        if (topOffset > 200) {
+          topOffset = 200;
+          currentDirection = "left";
+        }
+      } else if (currentDirection === "left") {
+        leftOffset--;
+        if (leftOffset < 0) {
+          leftOffset = 0;
+          currentDirection = "top";
+        }
+      } else if (currentDirection === "top") {
+        topOffset--;
+        if (topOffset < 0) {
+          topOffset = 0;
+          currentDirection = "right";
+        }
+      }
+    };
+
+    var circleMove = setInterval(moveHeading, 30);
+    $("h1").click(function (event) {
+      // clearInterval(circleMove);
+      // setInterval(moveHeading, 30);
+      clickCount++;
+    });
+
+  </script>
+</body>
+
+</html>
