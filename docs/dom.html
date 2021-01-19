@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Изучаем DOM</title>
+</head>
+<body>
+  <h1 id = "main-heading">Привет, мир!</h1>
+  <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+  <script>
+    // == 1 ==
+    friends = [
+      "Вова",
+      "Саша",
+      "Пуховат"
+    ];
+    for (i = 0; i < friends.length; i++) {
+      $("body").append("<p>"+ friends[i] + "</p>");
+    }
+    $("h1").text("Мои друзья");
+    $("p").hide().fadeIn(2000);
+    $("p").append(" лучший");
+
+    // == 2 ==
+    //$("h1").fadeOut(2000).fadeIn(2000).fadeIn(1000).fadeOut(2000).fadeIn(2000).fadeIn(1000).fadeOut(2000).fadeIn(2000).fadeIn(1000).fadeOut(2000).fadeIn(2000).fadeIn(1000).fadeOut(2000).fadeIn(2000);
+    // for (i = 0; i < 5; i++) {
+    //   $("h1").fadeOut(2000).fadeIn(2000).fadeIn(1000);
+    // }
+    for (i = 1; i <= 5; i++) {
+      $("h1").fadeOut(1000 * i).fadeIn(1000 * i).fadeIn(1000);
+    }
+
+    // == 3 ==
+    $("p:eq(1)").css("color", "red"); // выделил цветом какой элемент будет исчезать и появляться
+    $("p:eq(1)").fadeOut(2000).delay(5000).fadeIn(2000);
+    
+    // == 4 ==
+    $("p:eq(2)").fadeTo(1000, 0.6);
+
+  </script>
+</body>
+</html>
