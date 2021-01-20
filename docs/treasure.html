@@ -8,7 +8,7 @@
 <body>
   <h1>Найди клад!</h1>
 
-  <img src="img/treasuremap.png" alt="treasuremap" id="map" width="400" height="400">
+  <img src="img/bigMap.jpg" alt="treasuremap" id="map" width="800" height="800">
   
   <p id="distance"></p>
 
@@ -32,24 +32,29 @@
       if (distance < 10) {
         return "Обожжёшься!";
       } else if (distance < 20) {
+        return "Очень-очень горячо!"
+      } else if (distance < 50) {
         return "Очень горячо";
-      } else if (distance < 40) {
+      } else if (distance < 70) {
         return "Горячо";
-      } else if (distance < 80) {
+      } else if (distance < 100) {
         return "Тепло";
       } else if (distance < 160) {
         return "Холодно";
       } else if (distance < 320) {
         return "Очень холодно";
+      } else if (distance < 640) {
+        return "Очень-очень холодно!"
       } else {
         return "Замерзнешь!";
       }
     };
 
     // Создаём переменные
-    var width = 400;
-    var height = 400;
+    var width = 800;
+    var height = 800;
     var clicks = 0;
+    var maxClicks = 50; // ограничение по колличеству кликов
 
     // Случайная позиция клада
     var target = {
@@ -60,6 +65,7 @@
     // Добавляем элементу img обработчик клика
     $("#map").click(function (event) {
       clicks++;
+      maxClicks--; 
 
       // Получаем расстояние от места клика до клада
       var distance = getDistance(event, target);
@@ -68,7 +74,11 @@
       var distanceHint = getDistanceHint(distance);
       
       // Записываем в элемент #distance новую подсказку
-      $("#distance").text(distanceHint);
+      $("#distance").text(distanceHint + ". Осталось кликов: " + maxClicks);
+
+      if (maxClicks < 0) {
+        alert("Вы проиграли!")
+      }
 
       // Если клик был достаточно близко, поздравляем с победой
       if (distance < 8) {
