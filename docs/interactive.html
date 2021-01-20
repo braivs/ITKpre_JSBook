@@ -16,8 +16,8 @@
     var leftOffset = 0;
     var topOffset = 0;
     var currentDirection = "right"; // первое направление движения
-
-    var clickCount = 0;
+    var clickCount = 0; // колличество кликов в начале
+    var speed = 30; // скорость начальная движения по квадрату
 
     $("h1").append(" " + clickCount);
     
@@ -53,14 +53,24 @@
           currentDirection = "right";
         }
       }
+
+      if (clickCount === 10) {
+        $("h1").text("Вы победили!");
+        clearInterval(circleMove)
+      }
     };
 
-    var circleMove = setInterval(moveHeading, 30);
+    var circleMove = setInterval(moveHeading, speed);
     $("h1").click(function (event) {
-      // clearInterval(circleMove);
-      // setInterval(moveHeading, 30);
-      clickCount++;
+      if (clickCount < 10) {
+        clickCount++; // колличество кликов увеличиваю
+        speed -= 5; // скорость после клика увеличиваю
+        $("h1").text("Кликни меня! Кликов: " + clickCount);
+        clearInterval(circleMove);
+        circleMove = setInterval(moveHeading, speed);
+      } 
     });
+
 
   </script>
 </body>
