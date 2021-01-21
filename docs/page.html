@@ -9,13 +9,18 @@
 <body>
   <h1>Привет, мир!</h1>
   <p>Моя первая веб-страничка.</p>
+  <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
   <script>
-    var counter = 5;
+    var counter = 1;
+
     var printMessage = function () {
-      console.log("Ты смотришь в консоль уже " + counter + " сек");
-      counter += 5;
-    };
-    intervalId = setInterval(printMessage, 5000);
+      // console.log("Ты смотришь в консоль уже " + counter + " сек");
+      console.log("hi");
+      counter++;
+    }
+    
+    var intervalId = setInterval(console.log("hi"), 1000);
+
   </script>
 </body>
 
