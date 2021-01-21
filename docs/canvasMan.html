@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas</title>
+</head>
+<body>
+  <canvas id="canvas" width="200" height="250"></canvas>
+
+  <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.lineWidth = 4;
+    ctx.strokeRect(30, 10, 20, 20)
+    ctx.beginPath();
+    ctx.moveTo(40, 30); // переместил перо к центру низа головы
+    ctx.lineTo(40, 70); // черчу линию тела
+    ctx.moveTo(40, 50); // переместил перо к началам рук
+    ctx.lineTo(20, 40); // черчу левую руку
+    ctx.moveTo(40, 50); // переместил перо к началам рук
+    ctx.lineTo(60, 40); // черчу правую руку
+    ctx.moveTo(40, 70); // переместил перо к концу тела
+    ctx.lineTo(20, 100); // черчу левую ногу
+    ctx.moveTo(40, 70); // переместил перо к концу тела
+    ctx.lineTo(60, 100); // черчу левую ногу
+    ctx.stroke();
+    
+    // ctx.stroke(); 
+  </script>
+  
+</body>
+</html>
