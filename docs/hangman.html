@@ -3,13 +3,44 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Моя первая настоящая HTML-страничка</title>
+  <title>Виселица</title>
 </head>
 
 <body>
-  <h1>Привет, мир!</h1>
-  <p>Моя первая веб-страничка.</p>
+  <canvas id="canvas" width="200" height="250"></canvas>
   <script>
+    var drawMan = function (status) {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.lineWidth = 4;
+      if (status >= 1) {
+        ctx.strokeRect(30, 10, 20, 20) // рисую голову
+      }
+      if (status >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(40, 30); // переместил перо к центру низа головы
+        ctx.lineTo(40, 70); // черчу линию тела
+      } 
+      if (status >= 3) {
+        ctx.moveTo(40, 50); // переместил перо к началам рук
+        ctx.lineTo(20, 40); // черчу левую руку
+      }
+      if (status >= 4) {
+        ctx.moveTo(40, 50); // переместил перо к началам рук
+        ctx.lineTo(60, 40); // черчу правую руку
+      }
+      if (status >= 5) {
+        ctx.moveTo(40, 70); // переместил перо к концу тела
+        ctx.lineTo(20, 100); // черчу левую ногу
+      }
+      if (status >= 6 ) {
+        ctx.moveTo(40, 70); // переместил перо к концу тела
+        ctx.lineTo(60, 100); // черчу левую ногу
+      }
+      ctx.stroke();
+    }
+
+
     // Создайте здесь свои функции 
     let pickWord = function () {
       // Создаём массив со словами
@@ -48,6 +79,7 @@
       // возвращает число, обозначающее, сколько раз буква guess
       // встречается в слове, чтобы можно было обновить значение
       // remainingLetters
+      // + Здесь считаю сколько раз игрок указал букву, которой нет в слове
       let guessCount = 0;
       guess = guess.toLowerCase();
       attempts--;
@@ -60,14 +92,13 @@
             alert("Эта буква уже была" + "\nчисло попыток: " + attempts);
             break;
           }
-        }
+        } 
       }
       return guessCount;
     };
     let showAnswerAndCongratulatePlayer = function () {
       // С помощью alert показывает игроку отгаданное слово
       // и поздравляет его с победой
-      debugger;
       if (remainingLetters === 0) {
         alert("Вы выиграли!\n" + answerArray.join(" "));
         alert("Отлично! Было загадано слово: " + word);
@@ -80,11 +111,13 @@
     // word: загаданное слово
     let word = pickWord();
     let attempts = word.length + 5; //число попыток
+    let countWrongLetters = 0 // счётчик неверных букв
     // answerArray: итоговый массив 
     let answerArray = setupAnswerArray(word);
     // remainingLetters: сколько букв осталось угадать 
     let remainingLetters = word.length;
     while (remainingLetters > 0 && attempts > 0) {
+      drawMan(countWrongLetters);
       showPlayerProgress(answerArray);
       // guess: ответ игрока
       let guess = getGuess();
@@ -94,6 +127,10 @@
         alert("Пожалуйста, введите одиночную букву.");
       } else {
         let correctGuesses = updateGameState(guess, word, answerArray);
+        if (correctGuesses === 0) { // неверная буква, увеличить счётчик неверных букв
+          console.log("неверная буква");
+          countWrongLetters++
+        }
         remainingLetters -= correctGuesses;
       }
     }

@@ -11,8 +11,8 @@
   <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 
   <script>
-    $("html").click(function (event) {
-      $("#heading").offset({
+    $("html").mousemove(function (event) { // 1
+      $("#heading").offset({ // 2
         left: event.pageX,
         top: event.pageY
       });
