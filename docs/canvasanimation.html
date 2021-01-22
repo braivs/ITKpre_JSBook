@@ -1,19 +1,66 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Моя первая настоящая HTML-страничка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Анимация с canvas</title>
 </head>
-
 <body>
-  <h1>Привет, мир!</h1>
-  <p>Моя не первая веб-страничка.</p>
-  <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+  <canvas id="canvas" width="200" height="200"></canvas>
   <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
     
+    var circle = function (x, y, radius, fillCircle) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2, false); // 1
+      if (fillCircle) { // 2
+        ctx.fill(); // 3
+      } else {
+        ctx.stroke(); // 4
+      }
+    }; 
+
+    var drawBee = function (x, y) {
+      ctx.lineWidth = 2; // 1
+      ctx.strokeStyle = "Black";
+      ctx.fillStyle = "Gold";
+
+      circle(x, y, 8, true); // 2
+      circle(x, y, 8, false);
+      circle(x - 5, y - 11, 5, false);
+      circle(x + 5, y - 11, 5, false);
+      circle(x - 2, y - 1, 2, false);
+      circle(x + 2, y - 1, 2, false);
+    };
+
+    var update = function (coordinate) {
+      var offset = Math.random() * 4 - 2; // 1
+      coordinate += offset; // 2
+
+      if (coordinate > 200) { // 3
+        coordinate = 200;
+      }
+      if (coordinate < 0) { // 4
+        coordinate = 0;
+      }
+
+      return coordinate; // 5
+    };
+
+    var x = 100;
+    var y = 100;
+
+    setInterval(function () {
+      ctx.clearRect(0, 0, 200, 200); // 1
+
+      drawBee(x, y); // 2
+      x = update(x); // 3
+      y = update(y);
+
+      ctx.strokeRect(0, 0, 200, 200); // 4
+    }, 30);
 
   </script>
 </body>
-
 </html>
