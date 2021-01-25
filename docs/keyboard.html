@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keyboard input</title>
 </head>
+
 <body>
   <canvas id="canvas" width="400" height="400"></canvas>
   <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
@@ -22,30 +24,32 @@
         ctx.stroke();
       }
     };
-    
+
     // Конструктор Ball
     var Ball = function () {
       this.x = width / 2;
       this.y = height / 2;
       this.xSpeed = 5;
       this.ySpeed = 0;
+      this.speed = 5; // скорость мяча, которая будет меняться по нажатию клавиш
     };
-    
+
+    // Изменение направления на противоположное
+    // var reverse = function (direction) {
+    //   return direction * -1;
+    // }
+
     // Обновляем позицию мяча соотвественно его скорости
     Ball.prototype.move = function () {
       this.x += this.xSpeed;
       this.y += this.ySpeed;
-      if (this.x < 0) { 
-        this.x = width;
-      } else if (this.x > width) {
-        this.x = 0;
-      } else if (this.y < 0) {
-        this.y = height;
-      } else if (this.y > height) {
-        this.y = 0;
+      if (this.x < 0 || this.x > width) {
+        this.xSpeed = -this.xSpeed;
+      } else if (this.y < 0 || this.y > height) {
+        this.ySpeed = -this.ySpeed;
       }
     };
-    
+
     // Рисуем мяч в его тукущей позиции
     Ball.prototype.draw = function () {
       circle(this.x, this.y, 10, true);
@@ -53,17 +57,19 @@
 
     // Задаём направление движения по строке с названием действия
     Ball.prototype.setDirection = function (direction) {
+      console.log("setDirection Текущая скорость X: " + this.xSpeed)
+      console.log("setDirection Текущая скорость Y: " + this.ySpeed)
       if (direction === "up") {
         this.xSpeed = 0;
-        this.ySpeed = -5;
+        this.ySpeed = -this.speed;
       } else if (direction === "down") {
         this.xSpeed = 0;
-        this.ySpeed = 5;
+        this.ySpeed = this.speed;
       } else if (direction === "left") {
-        this.xSpeed = -5;
+        this.xSpeed = -this.speed;
         this.ySpeed = 0;
       } else if (direction === "right") {
-        this.xSpeed = 5;
+        this.xSpeed = this.speed;
         this.ySpeed = 0;
       } else if (direction === "stop") {
         this.xSpeed = 0;
@@ -71,23 +77,59 @@
       }
     };
 
+    // Изменение скорости
+    Ball.prototype.changeSpeed = function () {
+      if (this.xSpeed !== 0 ) { // сохраняю знак скорости
+        if (this.xSpeed < 0) {
+          this.xSpeed = -this.speed;
+        } else {
+          this.xSpeed = this.speed;
+        }
+      }
+      if (this.ySpeed !== 0) {
+        if (this.ySpeed < 0) {
+          this.ySpeed = -this.speed;
+        } else {
+          this.ySpeed = this.speed;
+        }
+      }
+      console.log("changeSpeed Текущая скорость X: " + this.xSpeed)
+      console.log("changeSpeed Текущая скорость Y: " + this.ySpeed)
+      console.log("changeSpeed Новая скорость: " + this.speed);
+    }
+
     // Создаём объект-мяч
-    var ball = new Ball(); 
+    var ball = new Ball();
 
     // Объект для перевода кодов клавиш в названия действий
-    var keyActions = { 
+    var keyActions = {
       32: "stop",
       37: "left",
       38: "up",
       39: "right",
       40: "down"
     };
-    
+
+    //объект с разными значениями скоростей
+    var speeds = {};
+    var j = 49; //1-9 клавиши это коды с 49 по 57
+    for (i = 1; i <= 9; i++) {
+      speeds[j] = i;
+      j++;
+    }
+
+
     // Обработчик события keydown, будет вызван при каждом нажатии
     // клавиши
-    $("body").keydown(function (event) { 
-      var direction = keyActions[event.keyCode]; 
-      ball.setDirection(direction); 
+    $("body").keydown(function (event) {
+      // debugger;
+      var direction = keyActions[event.keyCode];
+      if (event.keyCode >= 49 && event.keyCode <= 57) { // значит нажата цифровая кнопка
+        ball.speed = speeds[event.keyCode];
+        ball.changeSpeed();
+      } 
+      // console.log(speeds[event.keyCode]);
+      ball.setDirection(direction);
     });
 
     // Функция анимации, вызывается раз в 30 мс
@@ -96,7 +138,8 @@
       ball.draw();
       ball.move();
       ctx.strokeRect(0, 0, width, height);
-    });
+    }, 30);
   </script>
 </body>
+
 </html>
