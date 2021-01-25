@@ -10,7 +10,10 @@
   <script>
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    
+
+    var x = 100;
+    var y = 100;
+
     var circle = function (x, y, radius, fillCircle) {
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2, false); // 1
@@ -19,21 +22,19 @@
       } else {
         ctx.stroke(); // 4
       }
-    }; 
-
+    };
     var drawBee = function (x, y) {
-      ctx.lineWidth = 2; // 1
+      ctx.lineWidth = 2; 
       ctx.strokeStyle = "Black";
       ctx.fillStyle = "Gold";
 
-      circle(x, y, 8, true); // 2
+      circle(x, y, 8, true); 
       circle(x, y, 8, false);
       circle(x - 5, y - 11, 5, false);
       circle(x + 5, y - 11, 5, false);
       circle(x - 2, y - 1, 2, false);
       circle(x + 2, y - 1, 2, false);
     };
-
     var update = function (coordinate) {
       var offset = Math.random() * 4 - 2; // 1
       coordinate += offset; // 2
@@ -44,12 +45,8 @@
       if (coordinate < 0) { // 4
         coordinate = 0;
       }
-
       return coordinate; // 5
     };
-
-    var x = 100;
-    var y = 100;
 
     setInterval(function () {
       ctx.clearRect(0, 0, 200, 200); // 1
@@ -58,9 +55,9 @@
       x = update(x); // 3
       y = update(y);
 
-      ctx.strokeRect(0, 0, 200, 200); // 4
+      ctx.strokeRect(0, 0, 200, 200);
     }, 30);
-
+    
   </script>
 </body>
 </html>

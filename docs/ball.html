@@ -8,15 +8,17 @@
 <body>
   <canvas id="canvas" width="200" height="200"></canvas>
   <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
     var Ball = function () {
       this.x = 100;
       this.y = 100;
       this.xSpeed = -2;
       this.ySpeed = 3;
     };
-    
     var circle = function (x, y, radius, fillCircle) {
-      ctx.beginPath(); 
+      ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2, false);
       if (fillCircle) {
         ctx.fill();
@@ -24,25 +26,33 @@
         ctx.stroke();
       }
     };
-    
     Ball.prototype.draw = function () {
       circle(this.x, this.y, 3, true);
     };
-
     Ball.prototype.move = function () {
       this.x += this.xSpeed;
       this.y += this.ySpeed;
     };
-
     Ball.prototype.checkCollision = function () {
-      if (this.x < 0 || this.x > 200 ) { // 1
+      if (this.x < 0 || this.x > 200) { 
         this.xSpeed = -this.xSpeed;
       }
-      if (this.y < 0 || this.y > 200) { // 2
+      if (this.y < 0 || this.y > 200) {
         this.ySpeed = -this.ySpeed;
       }
     };
 
+    var ball = new Ball(); // 1
+
+    setInterval(function () { // 2
+      ctx.clearRect(0, 0, 200, 200); // 3
+
+      ball.draw(); // 4
+      ball.move();
+      ball.checkCollision();
+
+      ctx.strokeRect(0, 0, 200, 200); // 5
+    }, 30); // 6
   </script>
 </body>
 </html>
