@@ -32,12 +32,10 @@
       this.xSpeed = 5;
       this.ySpeed = 0;
       this.speed = 5; // скорость мяча, которая будет меняться по нажатию клавиш
-    };
+      this.xLastSpeed = null; // последние скорости, для ситуации когда мяч остановился Плавным изменением скорости
+      this.yLastSpeed = null;
 
-    // Изменение направления на противоположное
-    // var reverse = function (direction) {
-    //   return direction * -1;
-    // }
+    };
 
     // Обновляем позицию мяча соотвественно его скорости
     Ball.prototype.move = function () {
@@ -57,8 +55,6 @@
 
     // Задаём направление движения по строке с названием действия
     Ball.prototype.setDirection = function (direction) {
-      console.log("setDirection Текущая скорость X: " + this.xSpeed)
-      console.log("setDirection Текущая скорость Y: " + this.ySpeed)
       if (direction === "up") {
         this.xSpeed = 0;
         this.ySpeed = -this.speed;
@@ -74,12 +70,17 @@
       } else if (direction === "stop") {
         this.xSpeed = 0;
         this.ySpeed = 0;
+        this.xLastSpeed = null; //исправление бага, когда остановили скорость а потом space
+        this.yLastSpeed = null;
       }
     };
 
+
     // Изменение скорости
     Ball.prototype.changeSpeed = function () {
-      if (this.xSpeed !== 0 ) { // сохраняю знак скорости
+      // надо обрабатывать ситуацию когда мяч совсем остановился и новая скорость приходит 
+
+      if (this.xSpeed !== 0) { // не меняю скорость когда она нулевая и сохраняю знак
         if (this.xSpeed < 0) {
           this.xSpeed = -this.speed;
         } else {
@@ -93,9 +94,41 @@
           this.ySpeed = this.speed;
         }
       }
-      console.log("changeSpeed Текущая скорость X: " + this.xSpeed)
-      console.log("changeSpeed Текущая скорость Y: " + this.ySpeed)
-      console.log("changeSpeed Новая скорость: " + this.speed);
+      if (this.xSpeed === 0 && this.ySpeed === 0 && this.speed > 0) { // ситуация когда мяч остановился полностью и по последней скорости восстананавливаю какое было движение
+        if (ball.xLastSpeed !== 0 && ball.yLastSpeed === 0) { // значит последняя была по X
+          if (this.xLastSpeed < 0) {
+            this.xSpeed = -this.speed;
+          } else {
+            this.xSpeed = this.speed;
+          }
+        }
+        if (ball.xLastSpeed === 0 && ball.yLastSpeed !== 0) { // Значит последняя была скорость по y
+          if (this.yLastSpeed < 0) {
+            this.ySpeed = -this.speed;
+          } else {
+            this.ySpeed = this.speed;
+          }
+        }
+      }
+    }
+
+    // Плавное изменение скорости
+    Ball.prototype.changeSpeedSmooth = function (keyCode) {
+      if (keyCode === 90) {
+        ball.speed--;
+        if (ball.speed < 0) { // проверка гарантирующая что скорость не будет отрицательной
+          ball.speed = 0;
+        }
+      } else if (keyCode === 88) {
+        ball.speed++;
+      }
+      if (ball.speed === 0) { //Особенная ситуация! Надо запомнить последнюю скорость.
+        if (ball.xSpeed !== 0 || ball.ySpeed !== 0) { // Защита от стирания, если мяч уже остановлен
+          ball.xLastSpeed = ball.xSpeed;
+          ball.yLastSpeed = ball.ySpeed;
+        }
+      }
+      ball.changeSpeed();
     }
 
     // Создаём объект-мяч
@@ -122,13 +155,14 @@
     // Обработчик события keydown, будет вызван при каждом нажатии
     // клавиши
     $("body").keydown(function (event) {
-      // debugger;
       var direction = keyActions[event.keyCode];
       if (event.keyCode >= 49 && event.keyCode <= 57) { // значит нажата цифровая кнопка
         ball.speed = speeds[event.keyCode];
         ball.changeSpeed();
-      } 
-      // console.log(speeds[event.keyCode]);
+      }
+      if (event.keyCode === 90 || event.keyCode === 88) { // Плавное изменение скорости
+        ball.changeSpeedSmooth(event.keyCode);
+      }
       ball.setDirection(direction);
     });
 
