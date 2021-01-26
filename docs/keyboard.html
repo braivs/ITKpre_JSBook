@@ -34,6 +34,7 @@
       this.speed = 5; // скорость мяча, которая будет меняться по нажатию клавиш
       this.xLastSpeed = null; // последние скорости, для ситуации когда мяч остановился Плавным изменением скорости
       this.yLastSpeed = null;
+      this.size = 10 // размер мяча
 
     };
 
@@ -50,7 +51,7 @@
 
     // Рисуем мяч в его тукущей позиции
     Ball.prototype.draw = function () {
-      circle(this.x, this.y, 10, true);
+      circle(this.x, this.y, this.size, true);
     };
 
     // Задаём направление движения по строке с названием действия
@@ -70,7 +71,7 @@
       } else if (direction === "stop") {
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.xLastSpeed = null; //исправление бага, когда остановили скорость а потом space
+        this.xLastSpeed = null; //исправление бага, когда остановили скорость Z--, а потом space и X++
         this.yLastSpeed = null;
       }
     };
@@ -131,6 +132,19 @@
       ball.changeSpeed();
     }
 
+    // Изменение размера мяча по C/V
+    Ball.prototype.changeSize = function (keyCode) {
+      if (keyCode === 67) {
+        ball.size--;
+        if (ball.size < 0) { // защита, чтобы не стало меньше нуля
+          ball.size = 0;
+        }
+      } else if (keyCode === 86) {
+        ball.size++;
+      }
+
+    }
+
     // Создаём объект-мяч
     var ball = new Ball();
 
@@ -160,10 +174,13 @@
         ball.speed = speeds[event.keyCode];
         ball.changeSpeed();
       }
-      if (event.keyCode === 90 || event.keyCode === 88) { // Плавное изменение скорости
+      if (event.keyCode === 90 || event.keyCode === 88) { // Плавное изменение скорости Z/X
         ball.changeSpeedSmooth(event.keyCode);
       }
       ball.setDirection(direction);
+      if (event.keyCode === 67 || event.keyCode === 86) { // Изменение размера по C/V
+        ball.changeSize(event.keyCode);
+      }
     });
 
     // Функция анимации, вызывается раз в 30 мс
