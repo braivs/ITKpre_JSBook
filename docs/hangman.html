@@ -7,39 +7,12 @@
 </head>
 
 <body>
-  <canvas id="canvas" width="200" height="250"></canvas>
+  <canvas id="canvas" width="350" height="250"></canvas>
   <script>
-    var drawMan = function (status) {
-      var canvas = document.getElementById("canvas");
-      var ctx = canvas.getContext("2d");
-      ctx.lineWidth = 4;
-      if (status >= 1) {
-        ctx.strokeRect(30, 10, 20, 20) // рисую голову
-      }
-      if (status >= 2) {
-        ctx.beginPath();
-        ctx.moveTo(40, 30); // переместил перо к центру низа головы
-        ctx.lineTo(40, 70); // черчу линию тела
-      } 
-      if (status >= 3) {
-        ctx.moveTo(40, 50); // переместил перо к началам рук
-        ctx.lineTo(20, 40); // черчу левую руку
-      }
-      if (status >= 4) {
-        ctx.moveTo(40, 50); // переместил перо к началам рук
-        ctx.lineTo(60, 40); // черчу правую руку
-      }
-      if (status >= 5) {
-        ctx.moveTo(40, 70); // переместил перо к концу тела
-        ctx.lineTo(20, 100); // черчу левую ногу
-      }
-      if (status >= 6 ) {
-        ctx.moveTo(40, 70); // переместил перо к концу тела
-        ctx.lineTo(60, 100); // черчу левую ногу
-      }
-      ctx.stroke();
-    }
-
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    var width = canvas.width;
+    var height = canvas.height;
 
     // Создайте здесь свои функции 
     let pickWord = function () {
@@ -108,6 +81,42 @@
       }
     }
 
+    var drawMan = function (status) {
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      ctx.lineWidth = 4;
+      if (status >= 1) {
+        ctx.strokeRect(30, 10, 20, 20) // рисую голову
+      }
+      if (status >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(40, 30); // переместил перо к центру низа головы
+        ctx.lineTo(40, 70); // черчу линию тела
+      } 
+      if (status >= 3) {
+        ctx.moveTo(40, 50); // переместил перо к началам рук
+        ctx.lineTo(20, 40); // черчу левую руку
+      }
+      if (status >= 4) {
+        ctx.moveTo(40, 50); // переместил перо к началам рук
+        ctx.lineTo(60, 40); // черчу правую руку
+      }
+      if (status >= 5) {
+        ctx.moveTo(40, 70); // переместил перо к концу тела
+        ctx.lineTo(20, 100); // черчу левую ногу
+      }
+      if (status >= 6 ) {
+        ctx.moveTo(40, 70); // переместил перо к концу тела
+        ctx.lineTo(60, 100); // черчу левую ногу
+      }
+      ctx.stroke();
+    }
+
+    // рисование линий для букв
+    var drawLettersLines = function () {
+      ctx.moveTo
+    }
+
     // word: загаданное слово
     let word = pickWord();
     let attempts = word.length + 5; //число попыток
@@ -116,6 +125,9 @@
     let answerArray = setupAnswerArray(word);
     // remainingLetters: сколько букв осталось угадать 
     let remainingLetters = word.length;
+
+    //этот кусок заменяю на анимацию
+    /*
     while (remainingLetters > 0 && attempts > 0) {
       drawMan(countWrongLetters);
       showPlayerProgress(answerArray);
@@ -135,6 +147,12 @@
       }
     }
     showAnswerAndCongratulatePlayer(answerArray);
+    */
+    var intervalId = setInterval(function () {
+      ctx.clearRect(0, 0, width, height);
+      drawMan(countWrongLetters);
+      ctx.strokeRect(0, 0, width, height);
+    }, 100);
   </script>
 </body>
 

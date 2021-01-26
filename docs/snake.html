@@ -42,16 +42,24 @@
     };
 
     var gameOver = function () {
-      // clearInterval(intevalId);
+      clearInterval(intervalId);
       ctx.font = "60px Courier";
       ctx.fillStyle = "Black";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("Конец игры", width / 2, height / 2);
     };
+
     drawBorder();
     drawScore();
-    gameOver();
+    // gameOver();
+
+    var intervalId = setInterval(function () {
+      ctx.clearRect(0, 0, width, height);
+      score++;
+      drawScore();
+      drawBorder();
+    }, 100);
   </script>
 </body>
 </html>
