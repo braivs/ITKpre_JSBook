@@ -29,8 +29,8 @@
     };
 
     var Ball = function () {
-      this.x = 100;
-      this.y = 100;
+      this.x = 150;
+      this.y = 150;
       this.xSpeed = randomSpeed();
       this.ySpeed = randomSpeed();
       // массив цветов для мячиков
@@ -68,7 +68,7 @@
     // пустой массив для мячей
     var balls = [];
 
-    // цикля для 10 мячек
+    // цикл для 10 мячек
     for (i = 0; i < 10; i++) {
       balls[i] = new Ball();
     };
@@ -84,7 +84,7 @@
       };
 
       ctx.strokeRect(0, 0, width, height);
-    }, 30); // 6
+    }, 10); // 6
   </script>
 </body>
 

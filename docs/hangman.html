@@ -7,7 +7,8 @@
 </head>
 
 <body>
-  <canvas id="canvas" width="350" height="250"></canvas>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
   <script>
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -41,12 +42,8 @@
       // С помощью alert отображает текущее состояние игры
       alert(answerArray.join(" ") + "\nколличество букв: " + word.length + "\nчисло попыток: " + attempts);
     };
-    let getGuess = function () {
-      // Запрашивает ответ игрока с помощью prompt
-      let guess = prompt("Угадайте букву или нажмите Отмена для выхода из игры");
-      let test = 1;
-      return guess;
-    };
+    
+    
     let updateGameState = function (guess, word, answerArray) {
       // Обновляет answerArray согласно ответу игрока (guess)
       // возвращает число, обозначающее, сколько раз буква guess
@@ -65,7 +62,7 @@
             alert("Эта буква уже была" + "\nчисло попыток: " + attempts);
             break;
           }
-        } 
+        }
       }
       return guessCount;
     };
@@ -81,6 +78,7 @@
       }
     }
 
+    // Рисование человека
     var drawMan = function (status) {
       var canvas = document.getElementById("canvas");
       var ctx = canvas.getContext("2d");
@@ -92,7 +90,7 @@
         ctx.beginPath();
         ctx.moveTo(40, 30); // переместил перо к центру низа головы
         ctx.lineTo(40, 70); // черчу линию тела
-      } 
+      }
       if (status >= 3) {
         ctx.moveTo(40, 50); // переместил перо к началам рук
         ctx.lineTo(20, 40); // черчу левую руку
@@ -105,7 +103,7 @@
         ctx.moveTo(40, 70); // переместил перо к концу тела
         ctx.lineTo(20, 100); // черчу левую ногу
       }
-      if (status >= 6 ) {
+      if (status >= 6) {
         ctx.moveTo(40, 70); // переместил перо к концу тела
         ctx.lineTo(60, 100); // черчу левую ногу
       }
@@ -114,7 +112,43 @@
 
     // рисование линий для букв
     var drawLettersLines = function () {
-      ctx.moveTo
+      ctx.beginPath();
+      var x = 20; var y = 160; // начальные координаты
+      var dis = 10; // расстояние между линиями
+      var width = 30; // длина линии 
+
+      i = 0;
+      while (i < word.length) {
+        ctx.moveTo(x, y); // поставил перо на начало линии
+        x = x + width; // координата конца линии
+        ctx.lineTo(x, y); // нарисовал линию
+        x = x + dis; // координата смещения 
+        i++;
+      }
+
+      ctx.stroke();
+    }
+
+
+    // рисования букв над линиями
+    var drawLetters = function () {
+      var x = 25; var y = 155;
+      var dis = 40;  
+      ctx.font = "40px Arial";
+
+      i = 0;
+      while (i < word.length) {
+        ctx.fillText(word[i], x, y);
+        x = x + dis;
+        i++;
+      }
+    }
+
+    // Показ сообщений
+    var showMesseges = function (text) {
+      ctx.font = "20px Courier";
+      var x = 25; var y = 200;
+      ctx.fillText(text, x, y);
     }
 
     // word: загаданное слово
@@ -148,10 +182,45 @@
     }
     showAnswerAndCongratulatePlayer(answerArray);
     */
+
+    var pressedButton;
+    var pressedButtonCharCode;
+    $("body").keypress(function (event) {
+      pressedButton = event.key;
+      pressedButtonCharCode = event.charCode;
+      console.log(pressedButton);
+    });
+
+    // Тестовая.
+    // Вывод нажатых клавиш
+    var showPressedButton = function (pressedButton) {
+      ctx.font = "20px Courier";
+      var x = 25; var y = 220;
+      ctx.fillText("Нажата клавиша: " + pressedButton, x, y);
+      ctx.fillText("CharCode клавиши: " + pressedButtonCharCode, x, y + 20);
+      // ctx.fillText("CharCode клавиши: " + pressedButton.charCodeAt(), x, y + 20);
+    }
+
+    // Функция получения русской буквы. С отфильтровыванием других нажатий
+    let getGuess = function (pressedButton, pressedButtonCharCode) {
+      ctx.font = "20px Courier";
+      var x = 25; var y = 280;
+      if ((pressedButtonCharCode >= 1040 && pressedButtonCharCode <= 1103) || pressedButtonCharCode === 1025 || pressedButtonCharCode === 1105) {
+        var guess = pressedButton.toLowerCase();
+      } else guess = "NOT-RUSSIAN"
+      ctx.fillText("Нажата русская буква: " + guess, x, y);
+      return guess;
+    };
+
     var intervalId = setInterval(function () {
       ctx.clearRect(0, 0, width, height);
-      drawMan(countWrongLetters);
       ctx.strokeRect(0, 0, width, height);
+      drawMan(6);
+      drawLettersLines();
+      drawLetters();
+      showMesseges("Угадайте букву");
+      showPressedButton(pressedButton);
+      getGuess(pressedButton, pressedButtonCharCode);
     }, 100);
   </script>
 </body>
