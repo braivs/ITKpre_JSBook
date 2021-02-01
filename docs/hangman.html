@@ -12,26 +12,8 @@
   <script>
 
 
-    var showPlayerProgress = function (answerArray) {
-      // С помощью alert отображает текущее состояние игры
-      alert(answerArray.join(" ") + "\nколличество букв: " + word.length + "\nчисло попыток: " + attempts);
-    };
 
-
-
-    var showAnswerAndCongratulatePlayer = function () {
-      // С помощью alert показывает игроку отгаданное слово
-      // и поздравляет его с победой
-      if (remainingvarters === 0) {
-        alert("Вы выиграли!\n" + answerArray.join(" "));
-        alert("Отлично! Было загадано слово: " + word);
-      } else {
-        alert("Вы проиграли!\n" + answerArray.join(" "));
-        alert("Было загадано слово: " + word);
-      }
-    }
-
-    // Рисование человека
+    // Рисование человека, в случае неверных букв
     var drawMan = function (status) {
       var canvas = document.getElementById("canvas");
       var ctx = canvas.getContext("2d");
@@ -42,7 +24,7 @@
       }
       if (status < 5) {
         ctx.moveTo(40, 30); // переместил перо к центру низа головы
-        ctx.lineTo(40, 70); // черчу линию тела
+        ctx.lineTo(40, 35); // черчу линию тела
       }
       if (status < 4) {
         ctx.moveTo(40, 50); // переместил перо к началам рук
@@ -64,7 +46,7 @@
     }
 
     // рисование линий для букв
-    var drawLettersLines = function () {
+    var drawLettersLines = function (array) {
       ctx.beginPath();
       ctx.lineWidth = 4;
       var x = 20; var y = 160; // начальные координаты
@@ -72,7 +54,7 @@
       var width = 30; // длина линии 
 
       i = 0;
-      while (i < word.length) {
+      while (i < array.length) {
         ctx.moveTo(x, y); // поставил перо на начало линии
         x = x + width; // координата конца линии
         ctx.lineTo(x, y); // нарисовал линию
@@ -84,15 +66,15 @@
     }
 
 
-    // рисования букв над линиями
-    var drawLetters = function () {
+    // рисования отгаданных букв над линиями
+    var drawLetters = function (array) {
       var x = 20; var y = 148;
       var dis = 40;
       ctx.font = "40px Arial";
-
+      ctx.textAlign = "left";
       i = 0;
-      while (i < answerArray.length) {
-        ctx.fillText(answerArray[i], x, y);
+      while (i < array.length) {
+        ctx.fillText(array[i], x, y);
         x = x + dis;
         i++;
       }
@@ -107,36 +89,10 @@
       ctx.fillText("Осталось попыток: " + attempts, x, y + 20);
     }
 
-
-
-    //этот кусок заменяю на анимацию
-    /*
-    while (remainingvarters > 0 && attempts > 0) {
-      drawMan(countWrongvarters);
-      showPlayerProgress(answerArray);
-      // guess: ответ игрока
-     var guess = getGuess();
-      if (guess === null) {
-        break;
-      } else if (guess.length !== 1) {
-        alert("Пожалуйста, введите одиночную букву.");
-      } else {
-       var correctGuesses = updateGameState(guess, word, answerArray);
-        if (correctGuesses === 0) { // неверная буква, увеличить счётчик неверных букв
-          console.log("неверная буква");
-          countWrongvarters++
-        }
-        remainingvarters -= correctGuesses;
-      }
-    }
-    showAnswerAndCongratulatePlayer(answerArray);
-    */
-
-
-
     // Отладочная информация
     var showDebug = function (pressedButton, guess) {
       ctx.font = "20px Courier";
+      ctx.textAlign = "left";
       var x = 25; var y = 220;
       ctx.fillText("== Отладочная информация ==", x, y + 40);
       ctx.fillText("Загаданное слово: " + word, x, y + 60);
@@ -263,7 +219,7 @@
       }
     }
 
-    // Зачёркнутые буквы для showWrongLetters
+    // Линии для зачёркивания неверных букв
     var showWrongLetterStroke = function (mas) {
       ctx.beginPath();
       var x = 545; var y = 30; // начальные координаты
@@ -287,12 +243,11 @@
     }
 
     var attempts = word.length + 1; //число попыток
-    var countWrongvarters = 0 // счётчик неверных букв
     // answerArray: итоговый массив 
     var answerArray = setupAnswerArray(word);
     var wrongLettersArray = []; //массив для неверных букв
-    // remainingvarters: сколько букв осталось угадать 
-    var remainingvarters = word.length;
+    // remainingletters: сколько букв осталось угадать 
+    var remainingletters = word.length;
     var guess = null; // угаданная буква
     var correctGuesses = null; //число угаданных букв в слове
     var text = "Угадайте букву"; // Начальное сообщение
@@ -304,20 +259,52 @@
       pressedButton = event.key;
       pressedButtonCharCode = event.charCode;
       guess = getGuess(pressedButton, pressedButtonCharCode);
-      correctGuesses = updateGameState(guess, word, answerArray)
+      correctGuesses = updateGameState(guess, word, answerArray) // Тут логика игры.
+      if (!isNaN(correctGuesses)) { // если вернулось число букв
+        remainingletters -= correctGuesses; // пересчёт оставшихся букв
+        correctGuesses = 0; // и обнуление для другого захода
+      }
+      correctGuesses = 0;
     });
 
+
+    var showHide = 1; // переменная по которой буду определять статус. Если выигрыш или проигрыш, то нужно 
+                      // скрыть часть игрового интерфейса
+    
+    // изменение переменной showHide
+    var showHideChangeState = function () {
+      if (remainingletters === 0 || attempts === 0) {
+        showHide = 0;
+      }
+    }
+
+    var winOrGameOver = function () {
+      x = 100; y = 230;
+      if (remainingletters === 0) {
+        ctx.fillText("Победа!", x, y);
+      } else if (attempts === 0) {
+        ctx.fillText("Поражение!", x + 20, y);
+        ctx.fillText("Было загадано слово: " + word , x + 170, y + 40);
+      }
+    }
+
+    var gameOver = function () {
+      
+    }
+
     var intervalId = setInterval(function () {
-      ctx.clearRect(0, 0, width, height);
-      ctx.strokeRect(0, 0, width, height);
-      showMesseges(text, attempts);
-      drawLettersLines();
-      drawLetters();
-      drawMan(attempts);
-      showDebug(pressedButton, guess);
-      showWrongLetters(wrongLettersArray);
-      showWrongLetterStroke(wrongLettersArray);
-    }, 100);
+      ctx.clearRect(0, 0, width, height); // очистка анимации
+      ctx.strokeRect(0, 0, width, height); // рисование рамки
+      // if (showHide) showDebug(pressedButton, guess);
+      if (showHide) showMesseges(text, attempts); // Показ сообщений
+      drawLettersLines(answerArray); // рисование линий для букв в слове
+      drawLetters(answerArray); // рисования отгаданных букв над линиями
+      drawMan(attempts); // Рисование человека, в случае неверных букв
+      showWrongLetters(wrongLettersArray); // Показ неверных букв справа
+      showWrongLetterStroke(wrongLettersArray); // Линии для зачёркивания неверных букв
+      showHideChangeState(); // изменение переменной showHide
+      winOrGameOver();
+    }, 50);
   </script>
 </body>
 
