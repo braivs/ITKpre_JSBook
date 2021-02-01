@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <canvas id="canvas" width="600" height="600"></canvas>
+  <canvas id="canvas" width="600" height="400"></canvas>
   <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
   <script>
 
@@ -66,6 +66,7 @@
     // рисование линий для букв
     var drawLettersLines = function () {
       ctx.beginPath();
+      ctx.lineWidth = 4;
       var x = 20; var y = 160; // начальные координаты
       var dis = 10; // расстояние между линиями
       var width = 30; // длина линии 
@@ -100,6 +101,7 @@
     // Показ сообщений
     var showMesseges = function (text, attempts) {
       ctx.font = "20px Courier";
+      ctx.textAlign = "left";
       var x = 25; var y = 200;
       ctx.fillText(text, x, y);
       ctx.fillText("Осталось попыток: " + attempts, x, y + 20);
@@ -142,7 +144,6 @@
       ctx.fillText("Нажата клавиша: " + pressedButton, x, y + 100);
       ctx.fillText("CharCode клавиши: " + pressedButtonCharCode, x, y + 120);
       ctx.fillText("Нажата русская буква: " + guess, x, y + 140);
-      // ctx.fillText("CharCode клавиши: " + pressedButton.charCodeAt(), x, y + 20);
     }
 
     // Тестовая
@@ -190,12 +191,9 @@
             }
           }
         }
-        console.log(guessCount);
-        console.log(answerArray);
         if (guessCount === 0) {
           text = "Такой буквы нет в слове! Нажмите другую."
           attempts--;
-          //masPushNoRepeat(wrongLettersArray, guess);
           wrongLettersArray.push(guess);
 
         } else if (guessCount > 0) {
@@ -246,9 +244,10 @@
 
     // Показ неверных букв справа
     var showWrongLetters = function (mas) {
-      var x = 550; var y = 40;
-      var dis = 40;
+      var x = 565; var y = 40;
+      var dis = 30;
       ctx.font = "40px Arial";
+      ctx.textAlign = "center";
       if (mas.length !== 0) {
         i = 0;
         while (i < mas.length) {
@@ -256,9 +255,9 @@
           i++;
           if (y > height - 40) { // значит вышел за высоту полотна и надо второй ряд рисовать
             y = 40;
-            x -= 35;
+            x -= 45;
           } else {
-            y += 32;
+            y += dis;
           }
         }
       }
@@ -267,20 +266,22 @@
     // Зачёркнутые буквы для showWrongLetters
     var showWrongLetterStroke = function (mas) {
       ctx.beginPath();
-      var x = 546; var y = 30; // начальные координаты
-      var dis = 31; // расстояние между линиями
-      var width = 30; // длина линии 
-
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + width, y);
+      var x = 545; var y = 30; // начальные координаты
+      var dis = 30; // расстояние между линиями
+      var width = 40; // длина линии 
 
       i = 0;
-      while (i < mas.length - 1) {
-        ctx.moveTo(x, y + dis);
-        ctx.lineTo(x + width, y + dis);
+      while (i <= mas.length - 1) {
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + width, y);
+        if (y > height - 50) { // аналогичный перенос, как у букв, в случае переполнения по высоте
+          y = 30;              // здесь на + 10 для y больше, чем для букв
+          x -= 45;
+        } else {
+          y += dis;
+        }
         i++;
       }
-
       ctx.stroke();
 
     }
@@ -306,8 +307,6 @@
       correctGuesses = updateGameState(guess, word, answerArray)
     });
 
-    var wrongLettersArrayTest = ["й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ", "ф", "ы", "в", "а", "п", "р", "о", "л"];
-
     var intervalId = setInterval(function () {
       ctx.clearRect(0, 0, width, height);
       ctx.strokeRect(0, 0, width, height);
@@ -316,8 +315,8 @@
       drawLetters();
       drawMan(attempts);
       showDebug(pressedButton, guess);
-      showWrongLetters(wrongLettersArrayTest);
-      showWrongLetterStroke(wrongLettersArrayTest);
+      showWrongLetters(wrongLettersArray);
+      showWrongLetterStroke(wrongLettersArray);
     }, 100);
   </script>
 </body>
