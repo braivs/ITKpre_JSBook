@@ -24,7 +24,7 @@
       }
       if (status < 5) {
         ctx.moveTo(40, 30); // переместил перо к центру низа головы
-        ctx.lineTo(40, 35); // черчу линию тела
+        ctx.lineTo(40, 70); // черчу линию тела
       }
       if (status < 4) {
         ctx.moveTo(40, 50); // переместил перо к началам рук
@@ -295,7 +295,7 @@
     var intervalId = setInterval(function () {
       ctx.clearRect(0, 0, width, height); // очистка анимации
       ctx.strokeRect(0, 0, width, height); // рисование рамки
-      // if (showHide) showDebug(pressedButton, guess);
+      if (showHide) showDebug(pressedButton, guess);
       if (showHide) showMesseges(text, attempts); // Показ сообщений
       drawLettersLines(answerArray); // рисование линий для букв в слове
       drawLetters(answerArray); // рисования отгаданных букв над линиями
