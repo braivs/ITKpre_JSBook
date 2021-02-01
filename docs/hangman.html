@@ -11,36 +11,55 @@
   <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
   <script>
 
-
-
     // Рисование человека, в случае неверных букв
     var drawMan = function (status) {
       var canvas = document.getElementById("canvas");
       var ctx = canvas.getContext("2d");
       ctx.lineWidth = 4;
-      if (status < 6) {
+      if (status < 11) {
         ctx.beginPath();
         ctx.strokeRect(30, 10, 20, 20) // рисую голову
       }
-      if (status < 5) {
+      if (status < 10) {
         ctx.moveTo(40, 30); // переместил перо к центру низа головы
-        ctx.lineTo(40, 70); // черчу линию тела
+        // ctx.lineTo(40, 70); // черчу линию тела 1/2
+        ctx.lineTo(40, 50);
       }
-      if (status < 4) {
+      if (status < 9) {
+        ctx.moveTo(40, 50); // переместил перо к телу 1/2
+        ctx.lineTo(40, 70); // черчу линию тела 2/2
+      }
+      if (status < 8) {
         ctx.moveTo(40, 50); // переместил перо к началам рук
+        ctx.lineTo(30, 45); // черчу левую руку 1/2 
+      }
+      if (status < 7) {
+        ctx.moveTo(40, 50); // переместил перо к 1/2 левой руки
         ctx.lineTo(20, 40); // черчу левую руку
       }
-      if (status < 3) {
+      if (status < 6) {
         ctx.moveTo(40, 50); // переместил перо к началам рук
+        ctx.lineTo(50, 45); 
+      }
+      if (status < 5) {
+        ctx.moveTo(40, 50); // переместил перо к 1/2 правой руки
         ctx.lineTo(60, 40); // черчу правую руку
+      }
+      if (status < 4) {
+        ctx.moveTo(40, 70); // переместил перо к концу тела
+        ctx.lineTo(30, 85); // черчу 1/2 левой ноги
+      }
+      if (status < 3) {
+        ctx.moveTo(30, 85); // переместил перо к 1/2 левой ноги
+        ctx.lineTo(20, 100); // черчу левую ногу
       }
       if (status < 2) {
         ctx.moveTo(40, 70); // переместил перо к концу тела
-        ctx.lineTo(20, 100); // черчу левую ногу
+        ctx.lineTo(50, 85); // черчу 1/2 правой ноги
       }
       if (status < 1) {
-        ctx.moveTo(40, 70); // переместил перо к концу тела
-        ctx.lineTo(60, 100); // черчу левую ногу
+        ctx.moveTo(50, 85); // переместил перо к 1/2 правой ноги
+        ctx.lineTo(60, 100); // черчу правую ногу
       }
       ctx.stroke();
     }
@@ -242,7 +261,7 @@
 
     }
 
-    var attempts = word.length + 1; //число попыток
+    var attempts = word.length + 6; //число попыток
     // answerArray: итоговый массив 
     var answerArray = setupAnswerArray(word);
     var wrongLettersArray = []; //массив для неверных букв
@@ -280,11 +299,13 @@
 
     var winOrGameOver = function () {
       x = 100; y = 230;
-      if (remainingletters === 0) {
+      ctx.font = "35px Arial";
+      if (remainingletters === 0 && attempts > 0) {
         ctx.fillText("Победа!", x, y);
-      } else if (attempts === 0) {
+      } else if (attempts === 0 || attempts < 0) {
         ctx.fillText("Поражение!", x + 20, y);
-        ctx.fillText("Было загадано слово: " + word , x + 170, y + 40);
+         
+        ctx.fillText("Было загадано слово: " + word , x + 155, y + 40);
       }
     }
 
@@ -295,7 +316,7 @@
     var intervalId = setInterval(function () {
       ctx.clearRect(0, 0, width, height); // очистка анимации
       ctx.strokeRect(0, 0, width, height); // рисование рамки
-      if (showHide) showDebug(pressedButton, guess);
+      // if (showHide) showDebug(pressedButton, guess);
       if (showHide) showMesseges(text, attempts); // Показ сообщений
       drawLettersLines(answerArray); // рисование линий для букв в слове
       drawLetters(answerArray); // рисования отгаданных букв над линиями
