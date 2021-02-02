@@ -28,7 +28,6 @@
       ctx.fillRect(0, 0, blockSize, height);
       ctx.fillRect(width - blockSize, 0, blockSize, height);
     };
-    drawBorder();
 
     var drawScore = function () {
       ctx.font = "20px Courier";
@@ -37,7 +36,6 @@
       ctx.textBaseline = "top";
       ctx.fillText("Счёт: " + score, blockSize, blockSize);
     };
-    drawScore();
 
     var gameOver = function () {
       // clearInterval(intervalId);
@@ -47,7 +45,17 @@
       ctx.textBaseline = "middle";
       ctx.fillText("Конец игры", width / 2, height / 2);
     };
-    gameOver();
+
+    // drawBorder();
+    // drawScore();
+    // gameOver();
+
+    setInterval(function () {
+      score++;
+      ctx.clearRect(0, 0, width, height);
+      drawScore();
+      drawBorder();
+    }, 100);
 
   </script>
 </body>
