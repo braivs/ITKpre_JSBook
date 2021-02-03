@@ -6,7 +6,7 @@
   <title>Змейка!</title>
 </head>
 <body>
-  <canvas id="canvas" width="400" height="400"></canvas>
+  <canvas id="canvas" width="500" height="500"></canvas>
   <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 
   <script>
@@ -46,7 +46,8 @@
 
     // Отменяем действие setInterval и печатаем сообщение "Конец игры"
     var gameOver = function () {
-      clearInterval(intervalId);
+      // clearInterval(intervalId);
+      stop = true;
       ctx.font = "60px Courier";
       ctx.fillStyle = "Black";
       ctx.textAlign = "center";
@@ -108,7 +109,12 @@
     // Рисуем квадратик для каждого сегмента тела змейки
     Snake.prototype.draw = function () {
       for (var i = 0; i < this.segments.length; i++) {
-        this.segments[i].drawSquare("Blue");
+        if (i % 2 === 0) {
+          this.segments[i].drawSquare("Chocolate");
+        } else {
+          this.segments[i].drawSquare("Darkorange");
+        }
+
       }
     };
 
@@ -138,7 +144,13 @@
       this.segments.unshift(newHead);
       if (newHead.equal(apple.position)) {
         score++;
+        // while (apple.position.equal())
         apple.move();
+        animationTime -= 1;
+        if (animationTime < 0) {
+          animationTime = 0;
+        }
+        console.log(animationTime);
       } else {
         this.segments.pop();
       }
@@ -196,6 +208,11 @@
       var randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
       var randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
       this.position = new Block(randomCol, randomRow); // 2
+      i = 0;
+      while (this.position.equal(snake.segments[i])){
+        apple.move();  
+        i++;
+      }
     };
     
     // Создаём объект-змейку и объект-яблоко
@@ -203,14 +220,32 @@
     var apple = new Apple(); 
 
     // Запускаем функцию анимации через setInterval
-    var intervalId = setInterval(function () {
+    // var intervalId = setInterval(function () {
+    //   ctx.clearRect(0, 0, width, height);
+    //   drawScore();
+    //   snake.move();
+    //   snake.draw();
+    //   apple.draw();
+    //   drawBorder();
+    // }, 100);
+
+    // Задание 3. Теперь через setTimeout
+    var animationTime = 100;
+    var stop = false; 
+    var gameLoop = function () {
+      // Здесь должен быть код для рисования объектов и обновления
+      // состояния игры
       ctx.clearRect(0, 0, width, height);
       drawScore();
       snake.move();
       snake.draw();
       apple.draw();
       drawBorder();
-    }, 100);
+      if (stop === false) {
+        setTimeout(gameLoop, animationTime);
+      }
+    };
+    gameLoop();
 
     // Преобразуем коды клавиш в направления
     var direction = { // 7
@@ -223,7 +258,7 @@
     // Задаём обработчик события keydown (клавиши-стрелки)
     $("body").keydown(function (event) {
       var newDirection = direction[event.keyCode];
-      
+
       if (newDirection !== undefined) {
         snake.setDirection(newDirection);
       }
